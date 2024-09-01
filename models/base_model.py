@@ -18,10 +18,18 @@ class BaseModel:
             updated_at (datetime): assigned with current datetime & updated when instance changes
     """
 
-    def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+    def __init__(self, *args, **kwargs):
+        if len(kwargs) > 0:
+            kwargs.pop('__class__')
+            for (k, v) in kwargs.items():
+                if k in ["created_at", "updated_at"]:
+                    self.__dict__[k] = datetime.fromisoformat(v)
+                else:
+                    self.__dict__[k] = v
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
 
     def __str__(self):
         """

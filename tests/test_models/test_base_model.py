@@ -18,6 +18,10 @@ class TestBaseModel(unittest.TestCase):
         self.assertIs(uuid.UUID(b.id).version, 4)
         self.assertEqual(b.created_at, b.updated_at)
         self.assertIsInstance(b.created_at, datetime)
+        c = BaseModel(**b.to_dict())
+        self.assertEqual(c.id, b.id)
+        self.assertEqual(b.created_at, c.created_at)
+        self.assertIsInstance(c.created_at, datetime)
 
     def test_str(self):
         b = BaseModel()
