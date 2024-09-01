@@ -25,8 +25,8 @@ class TestFileStorage(unittest.TestCase):
 
     def test_all(self):
         self.assertTrue(len(self.storage.all()) == 0)
-        b = BaseModel()
-        self.assertIn(f"{b.__class__.__name__}.{b.id}", self.storage.all().keys())
+        a = BaseModel()
+        self.assertIn(f"{a.__class__.__name__}.{a.id}", self.storage.all().keys())
 
     def test_new(self):
         b_dict = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337', 'created_at': '2017-09-28T21:03:54.052298',
@@ -37,15 +37,21 @@ class TestFileStorage(unittest.TestCase):
 
 
     def test_save(self):
-        b = BaseModel()
-        b.save()
+        c = BaseModel()
+        c.save()
         self.assertTrue(os.path.isfile(self.path))
+        self.assertIn(f"{c.__class__.__name__}.{c.id}", self.storage.all().keys())
+
 
     def test_reload(self):
+        d = BaseModel()
+        d.save()
         self.assertTrue(os.path.exists(self.path))
         with open(self.path, mode='r') as f:
             objects = json.load(f)
-        self.assertIsInstance(objects, dict)
+            self.assertIsInstance(objects, dict)
+            self.assertIn(f"{d.__class__.__name__}.{d.id}", objects.keys())
+            #self.assertEqual(len(objects.values()),3)
 
     @classmethod
     def tearDownClass(cls):
