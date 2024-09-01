@@ -62,4 +62,4 @@ class TestFileStorage(unittest.TestCase):
             os.remove(cls.path)
         except (FileNotFoundError):
             pass
-        del storage
+        del cls.storage
