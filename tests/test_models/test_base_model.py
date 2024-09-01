@@ -24,6 +24,9 @@ class TestBaseModel(unittest.TestCase):
         cls.path = FileStorage._FileStorage__file_path
 
     def test_init(self):
+        """
+        Tests initialization of BaseModel
+        """
         b = BaseModel()
         self.assertIs(uuid.UUID(b.id).version, 4)
         self.assertEqual(b.created_at, b.updated_at)
@@ -34,6 +37,9 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(c.created_at, datetime)
 
     def test_str(self):
+        """
+        Tests __str__ function
+        """
         b = BaseModel()
         s = StringIO()
         print(b, file= s, end="")
@@ -41,6 +47,9 @@ class TestBaseModel(unittest.TestCase):
 
 
     def test_save(self):
+        """
+        Tests save function
+        """
         b = BaseModel()
         self.assertEqual(b.created_at, b.updated_at)
         b.save()
@@ -48,6 +57,9 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(os.path.exists(self.path))
 
     def test_to_dict(self):
+        """
+        Tests to_dict function
+        """
         b = BaseModel()
         b_dict = b.to_dict()
         self.assertIs(b_dict['__class__'], "BaseModel")
@@ -55,6 +67,9 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(b_dict["updated_at"], str)
 
     def test_run_all(self):
+        """
+        Runs instances as test
+        """
         a = BaseModel()
         a.name = "My First Model"
         a.my_number = 89
