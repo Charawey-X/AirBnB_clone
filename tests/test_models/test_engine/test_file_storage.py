@@ -47,10 +47,14 @@ class TestFileStorage(unittest.TestCase):
         d = BaseModel()
         d.save()
         expected = len(self.objects)
+        actual = {}
         self.assertTrue(os.path.exists(self.path))
+        with open(self.path, mode = 'r') as f:
+            actual = json.load(f)
         self.storage.reload()
         self.assertIn(f"{d.__class__.__name__}.{d.id}", self.objects.keys())
-        self.assertEqual(expected, len(self.objects))
+        self.assertEqual(expected, len(actual))
+        self.assertEqual(len(actual), len(self.objects))
 
     @classmethod
     def tearDownClass(cls):
