@@ -1,70 +1,46 @@
 #!/usr/bin/python3
+
 """
-BaseModel Class of Models Module
+BaseModel Module
 """
 
-import json
-import models
-from uuid import uuid4, UUID
 from datetime import datetime
-
-now = datetime.now
-strptime = datetime.strptime
+import uuid
 
 
 class BaseModel:
-    """attributes and functions for BaseModel class"""
+    """
+    Defines all common attributes/methods for other classes
+    Attributes:
+        Public instance:
+            id (str): assigned with uuid when instance is created
+            created_at (datetime): assigned with current datetime on instance creation
+            updated_at (datetime): assigned with current datetime & updated when instance changes
+    """
 
-    def __init__(self, *args, **kwargs):
-        """instantiation of new BaseModel Class"""
-        if kwargs:
-            self.__set_attributes(kwargs)
-        else:
-            self.id = str(uuid4())
-            self.created_at = now()
-            models.storage.new(self)
-
-    def __set_attributes(self, d):
-        """converts kwargs values to python class attributes"""
-        if not isinstance(d['created_at'], datetime):
-            d['created_at'] = strptime(d['created_at'], "%Y-%m-%d %H:%M:%S.%f")
-        if 'updated_at' in d:
-            if not isinstance(d['updated_at'], datetime):
-                d['updated_at'] = strptime(d['updated_at'],
-                                           "%Y-%m-%d %H:%M:%S.%f")
-        if d['__class__']:
-            d.pop('__class__')
-        self.__dict__ = d
-
-    def __is_serializable(self, obj_v):
-        """checks if object is serializable"""
-        try:
-            nada = json.dumps(obj_v)
-            return True
-        except:
-            return False
-
-    def bm_update(self, name, value):
-        setattr(self, name, value)
-        self.save()
-
-    def save(self):
-        """updates attribute updated_at to current time"""
-        self.updated_at = now()
-        models.storage.save()
-
-    def to_json(self):
-        """returns json representation of self"""
-        bm_dict = {}
-        for k, v in (self.__dict__).items():
-            if (self.__is_serializable(v)):
-                bm_dict[k] = v
-            else:
-                bm_dict[k] = str(v)
-        bm_dict["__class__"] = type(self).__name__
-        return(bm_dict)
+    def __init__(self):
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = self.created_at
 
     def __str__(self):
-        """returns string type representation of object instance"""
-        cname = type(self).__name__
-        return "[{}] ({}) {}".format(cname, self.id, self.__dict__)
+        """
+        Returns informal string representation of an instance
+        """
+        return f"[{self.__class__.__name__} ({self.id}) {self.__dict__}]"
+
+    def save(self):
+        """
+        Updates the public instance (updated_at) with the current datetime
+        """
+        self.updated_at = datetime.now()
+
+    def to_dict(self):
+        """
+        Returns a dictionary containing all key/value pairs of __dict__ of an instance
+        """
+        a_dict = self.__dict__.copy()
+        a_dict['__class__'] = self.__class__.__name__
+        a_dict["created_at"] = self.created_at.isoformat()
+        a_dict["updated_at"] = self.updated_at.isoformat()
+        return a_dict
