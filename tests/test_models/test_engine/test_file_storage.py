@@ -46,10 +46,11 @@ class TestFileStorage(unittest.TestCase):
     def test_reload(self):
         d = BaseModel()
         d.save()
+        expected = len(self.objects)
         self.assertTrue(os.path.exists(self.path))
         self.storage.reload()
         self.assertIn(f"{d.__class__.__name__}.{d.id}", self.objects.keys())
-        self.assertTrue(len(self.objects) > 0)
+        self.assertEqual(expected, len(self.objects))
 
     @classmethod
     def tearDownClass(cls):
