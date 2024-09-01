@@ -21,10 +21,11 @@ class TestFileStorage(unittest.TestCase):
         Run once before all tests
         """
         cls.storage = FileStorage()
+        cls.objects = FileStorage._FileStorage__objects
         cls.path = FileStorage._FileStorage__file_path
 
     def test_all(self):
-        self.assertTrue(len(self.storage.all()) == 0)
+        self.assertTrue(len(self.objects) == 0)
         a = BaseModel()
         self.assertIn(f"{a.__class__.__name__}.{a.id}", self.storage.all().keys())
 
@@ -33,25 +34,22 @@ class TestFileStorage(unittest.TestCase):
                   '__class__': 'BaseModel', 'my_number': 89, 'updated_at': '2017-09-28T21:03:54.052302',
                   'name': 'My_First_Model'}
         b = BaseModel(**b_dict)
-        self.assertNotIn(f"{b.__class__.__name__}.{b.id}", self.storage.all().keys())
+        self.assertNotIn(f"{b.__class__.__name__}.{b.id}", self.objects.keys())
 
 
     def test_save(self):
         c = BaseModel()
         c.save()
         self.assertTrue(os.path.isfile(self.path))
-        self.assertIn(f"{c.__class__.__name__}.{c.id}", self.storage.all().keys())
-
+        self.assertIn(f"{c.__class__.__name__}.{c.id}", self.objects.keys())
 
     def test_reload(self):
         d = BaseModel()
         d.save()
         self.assertTrue(os.path.exists(self.path))
-        with open(self.path, mode='r') as f:
-            objects = json.load(f)
-            self.assertIsInstance(objects, dict)
-            self.assertIn(f"{d.__class__.__name__}.{d.id}", objects.keys())
-            #self.assertEqual(len(objects.values()),3)
+        self.storage.reload()
+        self.assertIn(f"{d.__class__.__name__}.{d.id}", self.objects.keys())
+        print(len(self.objects))
 
     @classmethod
     def tearDownClass(cls):
@@ -62,4 +60,3 @@ class TestFileStorage(unittest.TestCase):
             os.remove(cls.path)
         except (FileNotFoundError):
             pass
-        del cls.storage

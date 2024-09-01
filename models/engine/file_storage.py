@@ -52,7 +52,7 @@ class FileStorage:
         """
         try:
             with open(FileStorage.__file_path, mode='r') as f:
-                for (k, v) in json.loads(f).items():
+                for (k, v) in json.load(f).items():
                     cls = models.classes[v["__class__"]]
                     self.new(cls(**v))
         except FileNotFoundError:
