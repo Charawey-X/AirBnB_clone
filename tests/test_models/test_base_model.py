@@ -4,8 +4,10 @@ Test Module for BaseModel
 """
 
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 from datetime import datetime
 from io import StringIO
+import os
 import uuid
 import unittest
 
@@ -13,6 +15,14 @@ class TestBaseModel(unittest.TestCase):
     """
     Tests the functionality of BaseModel
     """
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Run once before all tests
+        """
+        cls.path = FileStorage._FileStorage__file_path
+
     def test_init(self):
         b = BaseModel()
         self.assertIs(uuid.UUID(b.id).version, 4)
@@ -52,3 +62,13 @@ class TestBaseModel(unittest.TestCase):
         print(a)
         a_json = a.to_dict()
         print(a_json)
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Run after all tests are done
+        """
+        try:
+            os.remove(cls.path)
+        except (FileNotFoundError):
+            pass
