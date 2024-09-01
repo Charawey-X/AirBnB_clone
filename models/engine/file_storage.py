@@ -4,6 +4,7 @@
 File Storage Module
 """
 
+import models
 import json
 
 
@@ -15,7 +16,7 @@ class FileStorage:
             __file_path (str): path to the JSON file
             __objects (dict): stores all objects by <class name>.id
     """
-    __file_path = ""
+    __file_path = "file.json"
     __objects = {}
 
     def __init__(self):
@@ -25,20 +26,23 @@ class FileStorage:
         """
         Returns the dictionary __objects
         """
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """
         Sets in __objects the obj with key <obj class name>.id
         """
-        self.__objects[f"{obj.__class__.__name__}.{obj.id}"] = obj.__dict__
+        FileStorage.__objects[f"{obj.__class__.__name__}.{obj.id}"] = obj
 
     def save(self):
         """
         Serializes __objects to the JSON file
         """
-        with open(self.__file_path, mode='w') as f:
-            json.dump(self.__objects, f)
+        objects = {}
+        for k, v in FileStorage.__objects.items():
+            objects[k] = v.to_dict()
+        with open(FileStorage.__file_path, mode='w') as f:
+            json.dump(objects, f)
 
     def reload(self):
         """
@@ -46,7 +50,8 @@ class FileStorage:
         If the file doesn’t exist, no exception should be raised
         """
         try:
-            with open(self.__file_path, mode='r') as f:
-                self.__objects = json.load(f)
+            with open(FileStorage.__file_path, mode='r') as f:
+                for k, v in json.loads(f).items():
+                    self.new(models.classes[v["__class__"]](**v))
         except:
             pass
