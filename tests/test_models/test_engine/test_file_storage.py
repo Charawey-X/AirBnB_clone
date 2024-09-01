@@ -49,7 +49,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertTrue(os.path.exists(self.path))
         self.storage.reload()
         self.assertIn(f"{d.__class__.__name__}.{d.id}", self.objects.keys())
-        print(len(self.objects))
+        self.assertTrue(len(self.objects) > 0)
 
     @classmethod
     def tearDownClass(cls):
