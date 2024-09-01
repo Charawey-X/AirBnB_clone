@@ -45,6 +45,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(b.created_at, b.updated_at)
         b.save()
         self.assertNotEqual(b.created_at, b.updated_at)
+        self.assertTrue(os.path.exists(self.path))
 
     def test_to_dict(self):
         b = BaseModel()
