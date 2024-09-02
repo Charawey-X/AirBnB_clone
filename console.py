@@ -80,28 +80,25 @@ class HBNBCommand(cmd.Cmd):
                     print("** no instance found **")
 
     def do_all(self, line):
-        """Prints all string representation of all instances based on class name or all if (.) is used in place of class name:
+        """Prints all string representation of all instances based on class name or all if none is specified:
         <all> <model name> or
-        <all> ."""
+        <all>"""
+        models.storage.reload()
+        objects = models.storage.all()
+        v_list = []
         if line == "":
-            print("** class name missing **")
+            for v in objects.values():
+                v_list.append(v.__str__())
+            print(v_list)
         else:
             attributes = line.split()
-            if attributes[0] not in models.classes.keys() and attributes[0] != ".":
+            if attributes[0] not in models.classes.keys():
                 print("** class doesn't exist **")
             else:
-                models.storage.reload()
-                objects = models.storage.all()
-                v_list = []
-                if attributes[0] == '.':
-                    for v in objects.values():
-                        v_list.append(v.__str__())
-                    print(v_list)
-                else:
-                    for k in objects.keys():
-                        if attributes[0] in k:
-                            v_list.append(objects[k].__str__())
-                    print(v_list)
+                for k in objects.keys():
+                    if attributes[0] in k:
+                        v_list.append(objects[k].__str__())
+                print(v_list)
 
     def do_update(self, line):
         """Prints string representation of instance specified:
