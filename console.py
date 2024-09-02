@@ -129,7 +129,6 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         args = line.split('.')
-        print(args[0])
         func = args[1].split("(")
         classes = models.classes.keys()
         methods = {"show": self.do_show, "destroy": self.do_destroy, "all": self.do_all, "update": self.do_update}
