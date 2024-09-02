@@ -3,6 +3,7 @@
 Command Interpreter Module
 """
 
+from io import StringIO
 import cmd
 import models
 import re
@@ -26,7 +27,8 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, line):
-        """Creates a new instance of a model and prints its id:
+        """Creates a new instance of a model and prints its id.
+        Usage:
             <create> <model name>"""
         if line == "":
             print("** class name missing **")
@@ -39,8 +41,10 @@ class HBNBCommand(cmd.Cmd):
             print(a_model.id)
 
     def do_show(self, line):
-        """Prints string representation of instance specified:
-            <show> <model name> <id>"""
+        """Prints string representation of instance specified.
+        Usage:
+            show <model name> <id>
+            <model name>.show(<id>)"""
         if line == "":
             print("** class name missing **")
         else:
@@ -59,8 +63,10 @@ class HBNBCommand(cmd.Cmd):
                     print("** no instance found **")
 
     def do_destroy(self, line):
-        """Deletes the instance specified:
-            <destroy> <model name> <id>"""
+        """Deletes the instance specified.
+        Usage:
+            destroy <model name> <id>
+            <model name>.destroy(<id>)"""
         if line == "":
             print("** class name missing **")
         else:
@@ -81,9 +87,11 @@ class HBNBCommand(cmd.Cmd):
                     print("** no instance found **")
 
     def do_all(self, line):
-        """Prints all string representation of all instances based on class name or all if none is specified:
-        <all> <model name> or
-        <all>"""
+        """Prints all string representation of all instances based on class name or all if none is specified.
+        Usage:
+            all <model name>
+            all
+            <model name>.all()"""
         models.storage.reload()
         objects = models.storage.all()
         v_list = []
@@ -102,8 +110,10 @@ class HBNBCommand(cmd.Cmd):
                 print(v_list)
 
     def do_update(self, line):
-        """Updates instance specified with respective attribute and value:
-        <update> <model name> <id> <attribute> <value>"""
+        """Updates instance specified with respective attribute and value.
+        Usage:
+            update <model name> <id> <attribute> <value>
+            <model name>.update(<id>, <attribute>, <value>)"""
         if line == "":
             print("** class name missing **")
         else:
@@ -126,12 +136,22 @@ class HBNBCommand(cmd.Cmd):
                     objects[key].__dict__[attributes[2]] = attributes[3]
                     models.storage.save()
 
+    def do_count(self, line):
+        """Retrieve the number of instances of a class
+        Usage:
+            <model name>.count()"""
+        old_stdout = sys.stdout
+        sys.stdout = my_stdout = StringIO()
+        self.do_all(line.split()[0])
+        count = len(eval(my_stdout.getvalue()))
+        sys.stdout = old_stdout
+        print(count)
 
     def default(self, line):
         args = line.split('.')
         func = args[1].split('(')
         classes = models.classes.keys()
-        methods = {"show": self.do_show, "destroy": self.do_destroy, "all": self.do_all, "update": self.do_update}
+        methods = {"show": self.do_show, "destroy": self.do_destroy, "all": self.do_all, "update": self.do_update, "count": self.do_count}
         if args[0] not in classes:
             print("** class doesn't exist **")
         elif func[0] not in methods.keys():
