@@ -157,9 +157,21 @@ class HBNBCommand(cmd.Cmd):
         elif func[0] not in methods.keys():
             print("**command doesn't exist**")
         else:
-            new_line = args[0] + " " + re.findall(r'\((.*?)\)', args[1])[0].replace(',','')
-            method = methods[func[0]]
-            method(new_line)
+            if "{" in args[1] and func[0] == "update":
+                attributes = re.findall(r'\((.*?)\)', args[1])[0]
+                model_id = attributes.split(',')[0]
+                a_dict = eval(re.findall(r'\{.*?\}', attributes)[0])
+                key = str(args[0] + "." + model_id).replace('"','')
+                if key not in models.storage.all().keys():
+                    print("** no instance found **")
+                else:
+                    for k, v in a_dict.items():
+                        new_line = f"{args[0]} {model_id} {k} {v}"
+                        self.do_update(new_line)
+            else:
+                new_line = args[0] + " " + re.findall(r'\((.*?)\)', args[1])[0].replace(',','')
+                method = methods[func[0]]
+                method(new_line)
 
 
 
