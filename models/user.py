@@ -11,7 +11,7 @@ import uuid
 
 class User(models.BaseModel):
     """
-    Defines user model and inherits from Base
+    Defines User model and inherits from Base
     Attributes:
         Public class attributes:
             email (str)
