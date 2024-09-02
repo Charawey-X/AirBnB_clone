@@ -10,7 +10,7 @@ import sys
 
 class HBNBCommand(cmd.Cmd):
     """ AirBnB console interpreter """
-    prompt = '(hbnb)'
+    prompt = '(hbnb) '
 
     def do_quit(self, line):
         """Exits the program"""
@@ -92,13 +92,16 @@ class HBNBCommand(cmd.Cmd):
             else:
                 models.storage.reload()
                 objects = models.storage.all()
+                v_list = []
                 if attributes[0] == '.':
                     for v in objects.values():
-                        print(v)
+                        v_list.append(v.__str__())
+                    print(v_list)
                 else:
                     for k in objects.keys():
                         if attributes[0] in k:
-                            print(objects[k])
+                            v_list.append(objects[k].__str__())
+                    print(v_list)
 
     def do_update(self, line):
         """Prints string representation of instance specified:
