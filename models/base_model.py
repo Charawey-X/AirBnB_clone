@@ -15,8 +15,8 @@ class BaseModel:
     Attributes:
         Public instance:
             id (str): assigned with uuid when instance is created
-            created_at (datetime): assigned with current datetime on instance creation
-            updated_at (datetime): assigned with current datetime & updated when instance changes
+            created_at (datetime): current datetime on instance creation
+            updated_at (datetime): current datetime when instance changes
     """
 
     def __init__(self, *args, **kwargs):
@@ -48,7 +48,8 @@ class BaseModel:
 
     def to_dict(self):
         """
-        Returns a dictionary containing all key/value pairs of __dict__ of an instance
+        Returns a dictionary containing all
+        key/value pairs of __dict__ of an instance
         """
         a_dict = self.__dict__.copy()
         a_dict['__class__'] = self.__class__.__name__
