@@ -23,6 +23,10 @@ class TestFileStorage(unittest.TestCase):
         cls.storage = FileStorage()
         cls.objects = FileStorage._FileStorage__objects
         cls.path = FileStorage._FileStorage__file_path
+        try:
+            os.remove(cls.path)
+        except FileNotFoundError:
+            pass
 
     def test_all(self):
         """
