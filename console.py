@@ -5,6 +5,7 @@ Command Interpreter Module
 
 import cmd
 import models
+import re
 import shlex
 import sys
 
@@ -124,6 +125,23 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     objects[key].__dict__[attributes[2]] = attributes[3]
                     models.storage.save()
+
+
+    def default(self, line):
+        args = line.split('.')
+        print(args[0])
+        func = args[1].split("(")
+        classes = models.classes.keys()
+        methods = {"show": self.do_show, "destroy": self.do_destroy, "all": self.do_all, "update": self.do_update}
+        if args[0] not in classes:
+            print("** class doesn't exist **")
+        elif func[0] not in methods.keys():
+            print("**command doesn't exist**")
+        else:
+            new_line = args[0] + " " + re.findall(r'\((.*?)\)', args[1])[0]
+            method = methods[func[0]]
+            method(new_line)
+
 
 
 if __name__ == '__main__':
