@@ -35,6 +35,8 @@ class TestUser(unittest.TestCase):
         self.assertEqual(c.id, b.id)
         self.assertEqual(b.created_at, c.created_at)
         self.assertIsInstance(c.created_at, datetime)
+        self.assertIs(c.email, "")
+        self.assertTrue(len(c.password) == 0)
 
     def test_str(self):
         """
