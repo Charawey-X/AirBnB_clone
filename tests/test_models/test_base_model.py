@@ -43,7 +43,7 @@ class TestBaseModel(unittest.TestCase):
         b = BaseModel()
         s = StringIO()
         print(b, file= s, end="")
-        self.assertEqual(s.getvalue(), f"[{b.__class__.__name__}] ({b.id}) {b.__dict__}]")
+        self.assertEqual(s.getvalue(), f"[{b.__class__.__name__}] ({b.id}) {b.__dict__}")
 
 
     def test_save(self):
