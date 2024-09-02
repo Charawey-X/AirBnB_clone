@@ -10,8 +10,8 @@ from models.user import User
 from models.engine.file_storage import FileStorage
 
 
-classes = {"Amenity": Amenity, "BaseModel": BaseModel,  "City": City, "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {"Amenity": Amenity, "BaseModel": BaseModel,  "City": City,
+           "Place": Place, "Review": Review, "State": State, "User": User}
 
 storage = FileStorage()
 storage.reload()
-

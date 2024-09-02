@@ -10,6 +10,7 @@ import re
 import shlex
 import sys
 
+
 class HBNBCommand(cmd.Cmd):
     """ AirBnB console interpreter """
     prompt = '(hbnb) '
@@ -80,14 +81,14 @@ class HBNBCommand(cmd.Cmd):
                 key = f"{attributes[0]}.{attributes[1]}"
                 objects = models.storage.all()
                 if key in objects.keys():
-                    del(objects[key])
+                    del objects[key]
                     models.FileStorage._FileStorage__objects = objects
                     models.storage.save()
                 else:
                     print("** no instance found **")
 
     def do_all(self, line):
-        """Prints all string representation of all instances based on class name or all if none is specified.
+        """Prints all string representation of all instances as specified.
         Usage:
             all <model name>
             all
@@ -151,7 +152,8 @@ class HBNBCommand(cmd.Cmd):
         args = line.split('.')
         func = args[1].split('(')
         classes = models.classes.keys()
-        methods = {"show": self.do_show, "destroy": self.do_destroy, "all": self.do_all, "update": self.do_update, "count": self.do_count}
+        methods = {"show": self.do_show, "destroy": self.do_destroy,
+          "all": self.do_all, "update": self.do_update, "count": self.do_count}
         if args[0] not in classes:
             print("** class doesn't exist **")
         elif func[0] not in methods.keys():
@@ -161,7 +163,7 @@ class HBNBCommand(cmd.Cmd):
                 attributes = re.findall(r'\((.*?)\)', args[1])[0]
                 model_id = attributes.split(',')[0]
                 a_dict = eval(re.findall(r'\{.*?\}', attributes)[0])
-                key = str(args[0] + "." + model_id).replace('"','')
+                key = str(args[0] + "." + model_id).replace('"', '')
                 if key not in models.storage.all().keys():
                     print("** no instance found **")
                 else:
@@ -169,10 +171,10 @@ class HBNBCommand(cmd.Cmd):
                         new_line = f"{args[0]} {model_id} {k} {v}"
                         self.do_update(new_line)
             else:
-                new_line = args[0] + " " + re.findall(r'\((.*?)\)', args[1])[0].replace(',','')
+                new_line = (args[0] + " " +
+                        re.findall(r'\((.*?)\)', args[1])[0].replace(',', ''))
                 method = methods[func[0]]
                 method(new_line)
-
 
 
 if __name__ == '__main__':
