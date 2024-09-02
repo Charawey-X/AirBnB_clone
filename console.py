@@ -102,7 +102,7 @@ class HBNBCommand(cmd.Cmd):
                 print(v_list)
 
     def do_update(self, line):
-        """Prints string representation of instance specified:
+        """Updates instance specified with respective attribute and value:
         <update> <model name> <id> <attribute> <value>"""
         if line == "":
             print("** class name missing **")
@@ -129,7 +129,7 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         args = line.split('.')
-        func = args[1].split("(")
+        func = args[1].split('(')
         classes = models.classes.keys()
         methods = {"show": self.do_show, "destroy": self.do_destroy, "all": self.do_all, "update": self.do_update}
         if args[0] not in classes:
@@ -137,7 +137,7 @@ class HBNBCommand(cmd.Cmd):
         elif func[0] not in methods.keys():
             print("**command doesn't exist**")
         else:
-            new_line = args[0] + " " + re.findall(r'\((.*?)\)', args[1])[0]
+            new_line = args[0] + " " + re.findall(r'\((.*?)\)', args[1])[0].replace(',','')
             method = methods[func[0]]
             method(new_line)
 
