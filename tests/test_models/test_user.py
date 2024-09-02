@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
-Test Module for BaseModel
+Test Module for User
 """
 
-from models.base_model import BaseModel
+from models.user import User
 from models.engine.file_storage import FileStorage
 from datetime import datetime
 from io import StringIO
@@ -11,9 +11,9 @@ import os
 import uuid
 import unittest
 
-class TestBaseModel(unittest.TestCase):
+class TestUser(unittest.TestCase):
     """
-    Tests the functionality of BaseModel
+    Tests the functionality of User
     """
 
     @classmethod
@@ -22,20 +22,16 @@ class TestBaseModel(unittest.TestCase):
         Run once before all tests
         """
         cls.path = FileStorage._FileStorage__file_path
-        try:
-            os.remove(cls.path)
-        except FileNotFoundError:
-            pass
 
     def test_init(self):
         """
-        Tests initialization of BaseModel
+        Tests initialization of User
         """
-        b = BaseModel()
+        b = User()
         self.assertIs(uuid.UUID(b.id).version, 4)
         self.assertEqual(b.created_at, b.updated_at)
         self.assertIsInstance(b.created_at, datetime)
-        c = BaseModel(**b.to_dict())
+        c = User(**b.to_dict())
         self.assertEqual(c.id, b.id)
         self.assertEqual(b.created_at, c.created_at)
         self.assertIsInstance(c.created_at, datetime)
@@ -44,7 +40,7 @@ class TestBaseModel(unittest.TestCase):
         """
         Tests __str__ function
         """
-        b = BaseModel()
+        b = User()
         s = StringIO()
         print(b, file= s, end="")
         self.assertEqual(s.getvalue(), f"[{b.__class__.__name__}] ({b.id}) {b.__dict__}")
@@ -54,7 +50,7 @@ class TestBaseModel(unittest.TestCase):
         """
         Tests save function
         """
-        b = BaseModel()
+        b = User()
         self.assertEqual(b.created_at, b.updated_at)
         b.save()
         self.assertNotEqual(b.created_at, b.updated_at)
@@ -64,9 +60,9 @@ class TestBaseModel(unittest.TestCase):
         """
         Tests to_dict function
         """
-        b = BaseModel()
+        b = User()
         b_dict = b.to_dict()
-        self.assertIs(b_dict['__class__'], "BaseModel")
+        self.assertIs(b_dict['__class__'], "User")
         self.assertIsInstance(b_dict["created_at"], str)
         self.assertIsInstance(b_dict["updated_at"], str)
 
@@ -74,10 +70,11 @@ class TestBaseModel(unittest.TestCase):
         """
         Runs instances as test
         """
-        a = BaseModel()
-        a.name = "My First Model"
-        a.my_number = 89
-        print(a)
+        a = User()
+        a.first_name = "Betty"
+        a.last_name = "Bar"
+        a.email = "airbnb@mail.com"
+        a.password = "root"
         a.save()
         print(a)
         a_json = a.to_dict()
